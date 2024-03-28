@@ -1,7 +1,7 @@
 <?php
 // Database connection
 $servername = "localhost";
-$username = "rjz0003";
+$username = "MySQL83";
 $password = "Trot7188!";
 $dbname = "utf8mb4";
 
