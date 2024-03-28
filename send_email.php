@@ -1,34 +1,41 @@
 <?php
+// Database connection
+$servername = "localhost";
+$username = "rjz0003";
+$password = "Trot7188!";
+$dbname = "utf8mb4";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Form submission handling
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
     $message = $_POST['message'];
     
-    // Email address where you want to receive the messages
-    $to = "rjz0003@mix.wvu.edu"; // Change this to your email
+    // Insert into database
+    $sql = "INSERT INTO contact_info (name, email, message) VALUES ('$name', '$email', '$message')";
     
-    // Subject of the email
-    $subject = "New message from $name";
+    if ($conn->query($sql) === TRUE) {
+        // Send email
+        $to = "rjz0003@mix.wvu.edu";
+        $subject = "New Contact Form Submission";
+        $body = "Name: $name\nEmail: $email\nMessage: $message";
+        $headers = "From: $email";
 
-    // Compose the email body
-    $body = "Name: $name\n";
-    $body .= "Email: $email\n";
-    $body .= "Phone: $phone\n\n";
-    $body .= "Message:\n$message";
-
-    // Headers
-    $headers = "From: $name <$email>";
-
-    // Send email
-    if (mail($to, $subject, $body, $headers)) {
-        echo "Message sent successfully!";
+        mail($to, $subject, $body, $headers);
+        
+        echo "Thank you for your message!";
     } else {
-        echo "Message could not be sent.";
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
-} else {
-    // If the request method is not POST, redirect to the contact page
-    header("Location: contact.html");
-    exit;
 }
+
+$conn->close();
 ?>
